@@ -7,7 +7,7 @@ namespace SevenShifts.Application.Contracts
 {
     public interface IEmployee
     {
-        Task<IEnumerable<Domain.Entities.Employee>> GetEmployeeData();
-        Task<Domain.Entities.Employee> GetEmployeeData(int id);
+        Task<IEnumerable<Domain.Entities.Employee>> GetAllEmployeeData();
+        Task<Domain.Entities.Employee> GetEmployeeData(int userId);
     }
 }

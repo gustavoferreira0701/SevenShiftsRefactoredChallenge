@@ -27,7 +27,5 @@ namespace SevenShifts.Domain.Entities
         public string Photo { get; set; }
 
         public long UserType { get; set; }
-
-
     }
 }

@@ -3,13 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenShifts.Repository", "SevenShifts.Repository\SevenShifts.Repository.csproj", "{97567554-B1E9-491F-A0DC-8C4213ECC945}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenShifts.Repository", "SevenShifts.Repository\SevenShifts.Repository.csproj", "{97567554-B1E9-491F-A0DC-8C4213ECC945}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenShifts.Domain", "SevenShifts.Domain\SevenShifts.Domain.csproj", "{FC867250-3CE2-4437-BD02-A75D19D453F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenShifts.Domain", "SevenShifts.Domain\SevenShifts.Domain.csproj", "{FC867250-3CE2-4437-BD02-A75D19D453F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenShifts.API", "SevenShifts.API\SevenShifts.API.csproj", "{9AE6D593-1A59-4945-9767-3C38F595AC12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenShifts.API", "SevenShifts.API\SevenShifts.API.csproj", "{9AE6D593-1A59-4945-9767-3C38F595AC12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenShifts.Application", "SevenShifts.Application\SevenShifts.Application.csproj", "{EFB2DF24-423D-405F-A647-16410C3B6210}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenShifts.Application", "SevenShifts.Application\SevenShifts.Application.csproj", "{EFB2DF24-423D-405F-A647-16410C3B6210}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenShifts.Tests", "SevenShifts.Tests\SevenShifts.Tests.csproj", "{91FB6D94-B3B3-4B81-A953-D61369B40674}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenShifts.Helpers", "SevenShifts.Helpers\SevenShifts.Helpers.csproj", "{FE37F704-4A23-434D-8C39-58BE8ADF31A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{EFB2DF24-423D-405F-A647-16410C3B6210}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFB2DF24-423D-405F-A647-16410C3B6210}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFB2DF24-423D-405F-A647-16410C3B6210}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91FB6D94-B3B3-4B81-A953-D61369B40674}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91FB6D94-B3B3-4B81-A953-D61369B40674}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91FB6D94-B3B3-4B81-A953-D61369B40674}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91FB6D94-B3B3-4B81-A953-D61369B40674}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE37F704-4A23-434D-8C39-58BE8ADF31A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE37F704-4A23-434D-8C39-58BE8ADF31A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE37F704-4A23-434D-8C39-58BE8ADF31A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE37F704-4A23-434D-8C39-58BE8ADF31A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

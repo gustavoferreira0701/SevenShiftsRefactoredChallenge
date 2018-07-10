@@ -1,70 +1,83 @@
 ﻿using SevenShifts.Domain.Contracts;
 using SevenShifts.Domain.DTO;
-using System;
+using SevenShifts.Domain.Enum;
+using SevenShifts.Helpers.Extensions;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SevenShifts.Domain.Entities
 {
-    public class WorkHourCalculator : IWorkHourCalculator
+    public class WorkedHourCalculator : IWorkedHourCalculator
     {
-        private const int WEEK_SIZE = 7;
-        private const int DAILY_WORKHOUR_LIMIT = 8;
-        private const int WEEK_WORKHOUR_LIMIT = 40;
-
-        public WorkHourCalculationResult CalculateWorkedHour(TimePunch timePunch)
+        public WorkedHourCalculationResult CalculateWorkedDay(IEnumerable<TimePunch> dailyPunches, LabourSettings labourSettings)
         {
-            var result = timePunch.ClockedOut.Subtract(timePunch.ClockedIn);
+            var validationResult = Validate(dailyPunches.ToArray());
 
-            return new WorkHourCalculationResult
+            if (validationResult.Status != EWorkHourStatus.ValidWorkDay)
+                return validationResult;
+
+            var calculationResult = validationResult;
+
+            dailyPunches.OrderBy(t => t.ClockedIn);
+
+            var workedMinutes = 0.0d;
+
+            foreach (var timePunch in dailyPunches)
             {
-                WorkedDate = timePunch.ClockedIn.Date,
-                TotalWorkedHours = result.TotalHours,
-                TotalOvertime = (result.TotalHours - DAILY_WORKHOUR_LIMIT) > 0 ? (result.TotalHours - DAILY_WORKHOUR_LIMIT) : 0
-            };
-        }
-
-        public IEnumerable<WorkHourCalculationResult> CalculateDailyWorkedHour(IEnumerable<TimePunch> timePunchs)
-        {
-            List<WorkHourCalculationResult> result = new List<WorkHourCalculationResult>();
-
-            var groupedResult = (from timePunch in timePunchs
-                                 group timePunch by timePunch.ClockedIn.Date into timePunchGroup
-                                 orderby timePunchGroup.Key ascending
-                                 select timePunchGroup);
-
-            foreach (var timePunch in groupedResult)
-            {
-                var workCalculation = new WorkHourCalculationResult { WorkedDate = timePunch.Key };
-                foreach (var item in timePunch)
-                {
-                    var iterationResult = CalculateWorkedHour(item);
-                    workCalculation.TotalWorkedHours += iterationResult.TotalWorkedHours;
-                    workCalculation.TotalOvertime += iterationResult.TotalOvertime;
-                }
-                result.Add(workCalculation);
+                workedMinutes += (timePunch.ClockedOut - timePunch.ClockedIn).TotalMinutes;
             }
 
-            return result.ToList();
+            calculationResult.TotalRegularHours = workedMinutes > labourSettings.DailyOvertimeThreshold ? ((double)(labourSettings.DailyOvertimeThreshold / 60)).LimitToTimeFormat() : (double)(workedMinutes / 60).LimitToTimeFormat();
+            calculationResult.TotalOvertimeHours = workedMinutes > labourSettings.DailyOvertimeThreshold ? ((workedMinutes - labourSettings.DailyOvertimeThreshold) / 60).LimitToTimeFormat() : 0;
+            
+            return calculationResult;
         }
 
-        public WeeklyHourCalculationResult CalculateWeeklyOverTime(IEnumerable<TimePunch> timePunchs)
+        private WorkedHourCalculationResult Validate(TimePunch[] dailyPunches)
         {
-            var workHourCalculationResult = CalculateDailyWorkedHour(timePunchs);
-
-            var amountOfWorkedHourOnLastSevenDays = workHourCalculationResult.OrderByDescending(x => x.WorkedDate)
-                                                         .Take(WEEK_SIZE);
-
-            var totalWorkedHours = amountOfWorkedHourOnLastSevenDays.Sum(x => x.TotalWorkedHours);
-
-            return new WeeklyHourCalculationResult
+            if (dailyPunches == null || !dailyPunches.Any())
             {
-                WorkedDays = amountOfWorkedHourOnLastSevenDays.Select(x => x.WorkedDate),
-                TotalWorkedHours = totalWorkedHours,
-                WeekOvertime = (totalWorkedHours - WEEK_WORKHOUR_LIMIT) > 0 ? (totalWorkedHours - WEEK_WORKHOUR_LIMIT) : amountOfWorkedHourOnLastSevenDays.Sum(x => x.TotalOvertime)
-            };
-        }
+                return new WorkedHourCalculationResult
+                {
+                    Status = EWorkHourStatus.Undefined
+                };
+            }
 
+            dailyPunches.OrderBy(t => t.ClockedIn);
+
+            var firstPunchOfDay = dailyPunches.First().ClockedIn;
+
+            var validationResult = new WorkedHourCalculationResult();
+
+            for (int i = 0; i < dailyPunches.Count(); i++)
+            {
+                var timePunch = dailyPunches[i];
+
+                if ((i != 0 && timePunch.ClockedIn < dailyPunches[i - 1].ClockedOut))
+                {
+                    return new WorkedHourCalculationResult()
+                    {
+                        Status = EWorkHourStatus.TimePunchesInvalid,
+                        Punches = dailyPunches,
+                        WorkedDate = firstPunchOfDay
+                    };
+                }
+
+                if (timePunch.ClockedIn.IsNullOrDefault() || timePunch.ClockedOut.IsNullOrDefault())
+                {
+                    return new WorkedHourCalculationResult()
+                    {
+                        Status = EWorkHourStatus.MissingClockEntries,
+                        Punches = dailyPunches,
+                        WorkedDate = firstPunchOfDay
+                    };
+                }
+
+            }
+
+            validationResult.Status = EWorkHourStatus.ValidWorkDay;
+
+            return validationResult;
+        }
     }
 }

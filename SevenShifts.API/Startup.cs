@@ -31,7 +31,7 @@ namespace SevenShifts.API
         {
 
             services.AddScoped<IEmployee, SevenShifts.Application.Employee>();
-            services.AddScoped<IWorkHourCalculator, SevenShifts.Domain.Entities.WorkHourCalculator>();
+            services.AddScoped<IWorkedHourCalculator, SevenShifts.Domain.Entities.WorkedHourCalculator>();
             services.AddScoped<IUserRepository, UserRepository>((x) =>
             {
                 return new UserRepository($"{Configuration["SevenShiftsApiDomain"]}{Configuration["SevenShiftsUserApi"]}");
@@ -48,10 +48,7 @@ namespace SevenShifts.API
             services.AddMvcCore()
                     .AddJsonFormatters()
                     .AddApiExplorer()
-                    .AddJsonOptions(options =>
-                    {
-                        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                    });
+                    .AddJsonOptions(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

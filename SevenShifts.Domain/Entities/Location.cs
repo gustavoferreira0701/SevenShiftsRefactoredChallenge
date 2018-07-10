@@ -6,6 +6,7 @@ namespace SevenShifts.Domain.Entities
 {
     public class Location
     {   
+        public long Id { get; set; }
         public string Address { get; set; }
 
         public string City { get; set; }
@@ -13,8 +14,6 @@ namespace SevenShifts.Domain.Entities
         public string Country { get; set; }
 
         public DateTime Created { get; set; }
-
-        public long Id { get; set; }
 
         public LabourSettings LabourSettings { get; set; }
         
