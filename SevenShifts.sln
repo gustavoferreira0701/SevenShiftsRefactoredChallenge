@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenShifts.Application", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenShifts.Tests", "SevenShifts.Tests\SevenShifts.Tests.csproj", "{91FB6D94-B3B3-4B81-A953-D61369B40674}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenShifts.Helpers", "SevenShifts.Helpers\SevenShifts.Helpers.csproj", "{FE37F704-4A23-434D-8C39-58BE8ADF31A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenShifts.Utils", "SevenShifts.Helpers\SevenShifts.Utils.csproj", "{FE37F704-4A23-434D-8C39-58BE8ADF31A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

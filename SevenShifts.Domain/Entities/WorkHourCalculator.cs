@@ -2,6 +2,8 @@
 using SevenShifts.Domain.DTO;
 using SevenShifts.Domain.Enum;
 using SevenShifts.Helpers.Extensions;
+using SevenShifts.Utils.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,6 +11,30 @@ namespace SevenShifts.Domain.Entities
 {
     public class WorkedHourCalculator : IWorkedHourCalculator
     {
+        public IEnumerable<WorkedWeekCalculationResult> CalculateWorkedWeek(List<TimePunch> punches, LabourSettings labourSettings)
+        {
+            var dailyResults = new List<WorkedHourCalculationResult>();
+
+            foreach (var punch in punches.GroupBy(x => x.ClockedIn))
+            {
+                dailyResults.Add(CalculateWorkedDay(punch.ToList(), labourSettings));
+            }
+
+            var weekResults = new List<WorkedWeekCalculationResult>();
+
+            foreach (var week in dailyResults.GroupBy(x => DateHelper.GetWeekNumber(x.WorkedDate)))
+            {
+                weekResults.Add(new WorkedWeekCalculationResult
+                {
+                    TotalRegularHours = week.Sum(x => x.TotalRegularHours),
+                    TotalOvertimeHours = (week.Sum(x => x.TotalRegularHours + x.TotalOvertimeHours) - labourSettings.WeeklyOvertimeThreshold),
+                    WorkedDays = week
+                });
+            }
+
+            return weekResults;
+        }
+
         public WorkedHourCalculationResult CalculateWorkedDay(IEnumerable<TimePunch> dailyPunches, LabourSettings labourSettings)
         {
             var validationResult = Validate(dailyPunches.ToArray());
@@ -27,9 +53,11 @@ namespace SevenShifts.Domain.Entities
                 workedMinutes += (timePunch.ClockedOut - timePunch.ClockedIn).TotalMinutes;
             }
 
+            calculationResult.WorkedDate = dailyPunches.First().ClockedIn;
+
             calculationResult.TotalRegularHours = workedMinutes > labourSettings.DailyOvertimeThreshold ? ((double)(labourSettings.DailyOvertimeThreshold / 60)).LimitToTimeFormat() : (double)(workedMinutes / 60).LimitToTimeFormat();
             calculationResult.TotalOvertimeHours = workedMinutes > labourSettings.DailyOvertimeThreshold ? ((workedMinutes - labourSettings.DailyOvertimeThreshold) / 60).LimitToTimeFormat() : 0;
-            
+
             return calculationResult;
         }
 

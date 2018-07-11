@@ -7,7 +7,7 @@ using System.Text;
 namespace SevenShifts.Domain.DTO
 {
     public class WorkedHourCalculationResult
-    {
+    {   
         public EWorkHourStatus Status { get; set; }
         public DateTime WorkedDate { get; set; }
         public IEnumerable<TimePunch> Punches { get; set; }

@@ -40,7 +40,7 @@ namespace SevenShifts.Tests
         }
 
         [TestMethod]
-        public void ShouldCalculateWeeklyyWage()
+        public void ShouldCalculateWeeklyWage()
         {
         }
     }
