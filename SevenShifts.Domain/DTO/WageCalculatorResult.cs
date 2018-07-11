@@ -4,9 +4,10 @@ using System.Text;
 
 namespace SevenShifts.Domain.DTO
 {
-    public class WageCalculatorResult
+    public class WageCalculationResult
     {
         public decimal RegularWage { get; set; }
         public decimal OvertimeWage { get; set; }
+        public decimal Total => RegularWage + OvertimeWage;
     }
 }

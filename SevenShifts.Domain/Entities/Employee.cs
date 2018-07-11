@@ -9,6 +9,7 @@ namespace SevenShifts.Domain.Entities
     {
         public User RelatedUser { get; set; }
         public Location RelatedLocation { get; set; }
-        public IEnumerable<WorkedHourCalculationResult> DailyReport { get; set; }        
+        public IEnumerable<WorkedWeekCalculationResult> WorkReport { get; set; }  
+        
     }
 }

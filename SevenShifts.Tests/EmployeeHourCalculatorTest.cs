@@ -12,8 +12,17 @@ namespace SevenShifts.Tests
     [TestClass]
     public class EmployeeHourCalculatorTest
     {
+
         private List<TimePunch> punches;
         private LabourSettings labourSettings;
+        private User user;
+
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            user = new User { HourlyWage = 10 };
+        }
 
         #region Daily Calculation
         [TestMethod]
@@ -44,7 +53,7 @@ namespace SevenShifts.Tests
             };
 
             //WHEN
-            var calculator = new WorkedHourCalculator();
+            var calculator = new WorkedHourCalculator(new BasicWageCalculator());
             var calculationResult = calculator.CalculateWorkedDay(punches, labourSettings);
 
             //THEN
@@ -92,7 +101,7 @@ namespace SevenShifts.Tests
             };
 
             //WHEN
-            var calculator = new WorkedHourCalculator();
+            var calculator = new WorkedHourCalculator(new BasicWageCalculator());
             var calculationResult = calculator.CalculateWorkedDay(punches.ToArray(), labourSettings);
 
             //THEN
@@ -130,7 +139,7 @@ namespace SevenShifts.Tests
             };
 
             //WHEN
-            var calculator = new WorkedHourCalculator();
+            var calculator = new WorkedHourCalculator(new BasicWageCalculator());
             var calculationResult = calculator.CalculateWorkedDay(punches, labourSettings);
 
             //THEN
@@ -177,7 +186,7 @@ namespace SevenShifts.Tests
             };
 
             //WHEN
-            var calculator = new WorkedHourCalculator();
+            var calculator = new WorkedHourCalculator(new BasicWageCalculator());
             var calculationResult = calculator.CalculateWorkedDay(punches, labourSettings);
 
             //THEN
@@ -213,7 +222,7 @@ namespace SevenShifts.Tests
             };
 
             //WHEN
-            var calculator = new WorkedHourCalculator();
+            var calculator = new WorkedHourCalculator(new BasicWageCalculator());
             var calculationResult = calculator.CalculateWorkedDay(punches, labourSettings);
 
             //THEN
@@ -225,7 +234,34 @@ namespace SevenShifts.Tests
         #region Weekly Calculation
 
         [TestMethod]
-        public void ShoudValidateWeeklyTimePunch()
+        public void ShoudValidateWeeklyTimePunchWithoutWeekOvertime()
+        {
+            //GIVEN
+            punches = TimePunchesMock.GetThreeWeeksFromEmployee().ToList();
+
+            labourSettings = new LabourSettings
+            {
+                DailyOvertimeMultiplier = 1.5,
+                DailyOvertimeThreshold = 480,
+                Overtime = true,
+                WeeklyOvertimeMultiplier = 2,
+                WeeklyOvertimeThreshold = 2400
+            };
+
+
+            //WHEN
+            var calculator = new WorkedHourCalculator(new BasicWageCalculator());
+            var calculationResult = calculator.CalculateWorkedWeek(punches, labourSettings, user).ToArray();
+
+            //THEN
+            Assert.IsNotNull(calculationResult);
+            Assert.AreEqual(2, calculationResult.Count());
+            Assert.IsTrue(calculationResult[0].TotalWeekOverTime <= labourSettings.WeeklyOvertimeThreshold);
+
+        }
+
+        [TestMethod]
+        public void ShoudValidateWeeklyTimePunchWithWeekOvertime()
         {
             //GIVEN
             punches = TimePunchesMock.GetThreeWeeksFromEmployee().ToList();
@@ -240,13 +276,16 @@ namespace SevenShifts.Tests
             };
 
             //WHEN
-            var calculator = new WorkedHourCalculator();
-            var calculationResult = calculator.CalculateWorkedWeek(punches, labourSettings);
+            var calculator = new WorkedHourCalculator(new BasicWageCalculator());
+            var calculationResult = calculator.CalculateWorkedWeek(punches, labourSettings, user).ToArray();
 
             //THEN
             Assert.IsNotNull(calculationResult);
             Assert.AreEqual(2, calculationResult.Count());
+            Assert.IsTrue(calculationResult[1].TotalWeekOverTime > 0);
+
         }
+
         #endregion  
 
     }

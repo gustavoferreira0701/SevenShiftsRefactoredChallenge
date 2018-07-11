@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace SevenShifts.Helpers.Extensions
@@ -15,5 +16,8 @@ namespace SevenShifts.Helpers.Extensions
         {
             return date == null || date == default(DateTime);
         }
+
+        
+
     }
 }

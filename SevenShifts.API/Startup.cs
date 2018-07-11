@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using SevenShifts.Application;
 using SevenShifts.Application.Contracts;
 using SevenShifts.Domain.Contracts;
+using SevenShifts.Domain.Entities;
 using SevenShifts.Repository.Repositories;
 
 namespace SevenShifts.API
@@ -31,6 +32,7 @@ namespace SevenShifts.API
         {
 
             services.AddScoped<IEmployee, SevenShifts.Application.Employee>();
+            services.AddScoped<IWageCalculator, BasicWageCalculator>();
             services.AddScoped<IWorkedHourCalculator, SevenShifts.Domain.Entities.WorkedHourCalculator>();
             services.AddScoped<IUserRepository, UserRepository>((x) =>
             {

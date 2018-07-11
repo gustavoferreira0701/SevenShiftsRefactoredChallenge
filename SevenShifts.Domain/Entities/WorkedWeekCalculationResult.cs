@@ -9,7 +9,9 @@ namespace SevenShifts.Domain.Entities
     {
         public IEnumerable<WorkedHourCalculationResult> WorkedDays { get; set; }
         public double TotalRegularHours { get; set; }
-        public double TotalOvertimeHours { get; set; }
-        public Wage WageData { get; set; }
+        public double TotalWeekOverTime { get; set; }
+        public double TotalDailyOverTime { get; set; }
+        public WageCalculationResult WageData { get; set; }
+        public IEnumerable<WorkedHourCalculationResult> NotValidWorkDays { get; set; }
     }
 }

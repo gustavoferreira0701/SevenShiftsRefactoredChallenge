@@ -6,22 +6,18 @@ using System.Text;
 
 namespace SevenShifts.Domain.Entities
 {
-    public class WageHourCalculator : IWageCalculus
-    {
-
-        //double totalWorkedHours, decimal employeeSalary, LabourSettings labourSettings
-        public WageCalculatorResult CalculateDailyWage(double totalRegularWorkedHours, double totalOverTimeWorkedHours, decimal employeeSalary, LabourSettings labourSettings)
+    public class BasicWageCalculator : IWageCalculator
+    {        
+        public WageCalculationResult CalculateWage(double totalRegularWorkedHours, 
+                                                  double totalOverTimeWorkedHours, 
+                                                  decimal employeeSalary, 
+                                                  decimal overtimeMultiplier)
         {
-            return new WageCalculatorResult
+            return new WageCalculationResult
             {
                 RegularWage = Math.Round(((decimal)totalRegularWorkedHours * employeeSalary), 2),
-                OvertimeWage = Math.Round(((decimal)totalOverTimeWorkedHours * (employeeSalary * (decimal)labourSettings.DailyOvertimeMultiplier)), 2)
+                OvertimeWage = Math.Round((decimal)totalOverTimeWorkedHours * (employeeSalary * overtimeMultiplier), 2)
             };
-        }
-
-        public WageCalculatorResult CalculateWeeklyWage()
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -17,6 +17,25 @@ namespace SevenShifts.API.Controllers
         public EmployeeController(IEmployee employeeApp)
         {
             _employeeApp = employeeApp;
-        }     
+        }
+
+        [HttpGet, Route("data/{userid}")]
+        public async Task<IActionResult> GetEmployeeData(int userid)
+        {
+            try
+            {
+                var result = await _employeeApp.GetEmployeeData(userid);
+
+                if (result == null)
+                    return NotFound();
+                else
+                    return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+        }
     }
 }

@@ -6,9 +6,11 @@ using System.Text;
 
 namespace SevenShifts.Domain.Contracts
 {
-    interface IWageCalculus
+    public interface IWageCalculator
     {
-        WageCalculatorResult CalculateDailyWage(double totalRegularWorkedHours, double totalOverTimeWorkedHours, decimal employeeSalary, LabourSettings labourSettings);
-        WageCalculatorResult CalculateWeeklyWage();
+        WageCalculationResult CalculateWage(double totalRegularWorkedHours,
+                                           double totalOverTimeWorkedHours,
+                                           decimal employeeSalary,
+                                           decimal overtimeMultiplier);
     }
 }

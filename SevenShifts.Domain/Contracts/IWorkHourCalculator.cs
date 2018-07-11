@@ -6,7 +6,7 @@ namespace SevenShifts.Domain.Contracts
 {
     public interface IWorkedHourCalculator
     {
-        IEnumerable<WorkedWeekCalculationResult> CalculateWorkedWeek(List<TimePunch> punches, LabourSettings labourSettings);
+        IEnumerable<WorkedWeekCalculationResult> CalculateWorkedWeek(IEnumerable<TimePunch> punches, LabourSettings labourSettings, User userData);
         WorkedHourCalculationResult CalculateWorkedDay(IEnumerable<TimePunch> dailyPunches, LabourSettings labourSettings);
     }
 }
