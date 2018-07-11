@@ -22,12 +22,35 @@ namespace SevenShifts.Application
             _timePunchRepository = timePunchRepository;
             _userRepository = userRepository;
             _locationRepository = locationRepository;
-            _workedHourCalculator = workedHourCalculator;            
+            _workedHourCalculator = workedHourCalculator;
         }
 
-        public Task<IEnumerable<Domain.Entities.Employee>> GetAllEmployeeData()
+        public async Task<IEnumerable<Domain.Entities.Employee>> GetAllEmployeeData()
         {
-            throw new NotImplementedException();
+            var users = _userRepository.GetUsers();
+            var locations = _locationRepository.GetLocations();
+            var punches = _timePunchRepository.GetTimePunches();
+
+            await Task.WhenAll(users, locations, punches);
+
+            var response = new List<Domain.Entities.Employee>();
+
+
+            foreach (var user in users.Result)
+            {
+                var currentLocation = locations.Result.FirstOrDefault(x => x.Id == user.LocationId);
+                var relatedTimePunches = punches.Result.Where(x => x.UserId == user.Id);
+
+                var result = _workedHourCalculator.CalculateWorkedWeek(relatedTimePunches, currentLocation.LabourSettings, user);
+                response.Add(new Domain.Entities.Employee
+                {
+                    RelatedLocation = currentLocation,
+                    RelatedUser = user,
+                    WorkReport = result
+                });
+            }
+
+            return response;
         }
 
         public async Task<Domain.Entities.Employee> GetEmployeeData(int userId)
@@ -49,11 +72,11 @@ namespace SevenShifts.Application
 
 
             var workHourCalculationResult = _workedHourCalculator.CalculateWorkedWeek(punches, location.LabourSettings, user);
-            
+
             var employeeData = new Domain.Entities.Employee
             {
-                RelatedLocation = location, 
-                RelatedUser = user, 
+                RelatedLocation = location,
+                RelatedUser = user,
                 WorkReport = workHourCalculationResult
             };
 
